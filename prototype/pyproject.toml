@@ -1,0 +1,16 @@
+[project]
+name = "retail-stock-balancer"
+version = "1.0.0"
+requires-python = ">=3.13"
+
+dependencies = [
+    "streamlit>=1.32.0",
+    "pandas>=2.2.2",
+    "plotly>=5.20.0",
+    "numpy>=1.26.4",
+    "openpyxl>=3.1.5",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
