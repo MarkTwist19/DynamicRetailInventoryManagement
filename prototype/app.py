@@ -1112,6 +1112,41 @@ def process_raw_files(sales_file, sales_sheet, sales_mapping,
     missing_size = 0
     missing_color = 0
     
+    # Helper function to ensure correct schema for products table
+    def ensure_correct_schema(conn):
+        """Ensure database schema matches what the code expects"""
+        cursor = conn.cursor()
+    
+        # Check products table columns
+        cursor.execute("PRAGMA table_info(products)")
+        existing_columns = [col[1] for col in cursor.fetchall()]
+    
+        # Expected columns for products
+        expected_columns = [
+            'sku', 'style_code', 'style_name', 'description', 'category',
+            'size', 'gender', 'color', 'cost_price', 'retail_price',
+            'supplier', 'brand', 'product_type', 'season', 'created_at'
+        ]
+    
+        # Add missing columns
+        for col in expected_columns:
+            if col not in existing_columns:
+                try:
+                    # Determine column type
+                    if col in ['size', 'cost_price', 'retail_price']:
+                        col_type = "REAL"
+                    elif col in ['created_at']:
+                        col_type = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+                    else:
+                        col_type = "TEXT"
+                
+                    cursor.execute(f"ALTER TABLE products ADD COLUMN {col} {col_type}")
+                    print(f"Added missing column: {col}")
+                except Exception as e:
+                    print(f"Could not add column {col}: {e}")
+    
+        conn.commit()
+
     # Helper function to extract product from a dataframe row
     def extract_product_from_row(row, source_df, source_name, source_mapping):
         nonlocal missing_desc, missing_product_type, missing_size, missing_color
@@ -1214,6 +1249,9 @@ def process_raw_files(sales_file, sales_sheet, sales_mapping,
             'season': season
         }
     
+    # Check schema for products table and add missing columns if necessary
+    ensure_correct_schema(conn)
+
     # Process SOH data for products
     if 'products.sku' in soh_mapping:
         sku_source = soh_mapping['products.sku']
