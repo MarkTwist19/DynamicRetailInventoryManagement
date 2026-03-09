@@ -5,7 +5,7 @@ import streamlit as st
 def init_database():
     """Initialize SQLite database with required tables"""
     try:
-        conn = sqlite3.connect('inventory.db', check_same_thread=False)
+        conn = sqlite3.connect('inventory_v3.db', check_same_thread=False)
         cursor = conn.cursor()
         
         # Enable foreign keys
@@ -30,11 +30,16 @@ def init_database():
             style_name TEXT NOT NULL,
             description TEXT,
             category TEXT,
-            product_type TEXT,
             size REAL,
             gender TEXT,
+            color TEXT,
             cost_price REAL,
-            retail_price REAL
+            retail_price REAL,
+            supplier TEXT,
+            brand TEXT,
+            product_type TEXT,
+            season TEXT,
+            create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         ''')
         
@@ -55,10 +60,10 @@ def init_database():
         # Sales transactions table
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS sales (
-            sale_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sale_id TEXT,
             store_id TEXT,
             sku TEXT,
-            sale_date DATE,
+            sale_date DATETIME,
             quantity INTEGER,
             revenue REAL,
             FOREIGN KEY (store_id) REFERENCES stores(store_id),

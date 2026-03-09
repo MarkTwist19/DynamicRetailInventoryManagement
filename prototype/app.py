@@ -1112,41 +1112,6 @@ def process_raw_files(sales_file, sales_sheet, sales_mapping,
     missing_size = 0
     missing_color = 0
     
-    # Helper function to ensure correct schema for products table
-    def ensure_correct_schema(conn):
-        """Ensure database schema matches what the code expects"""
-        cursor = conn.cursor()
-    
-        # Check products table columns
-        cursor.execute("PRAGMA table_info(products)")
-        existing_columns = [col[1] for col in cursor.fetchall()]
-    
-        # Expected columns for products
-        expected_columns = [
-            'sku', 'style_code', 'style_name', 'description', 'category',
-            'size', 'gender', 'color', 'cost_price', 'retail_price',
-            'supplier', 'brand', 'product_type', 'season', 'created_at'
-        ]
-    
-        # Add missing columns
-        for col in expected_columns:
-            if col not in existing_columns:
-                try:
-                    # Determine column type
-                    if col in ['size', 'cost_price', 'retail_price']:
-                        col_type = "REAL"
-                    elif col in ['created_at']:
-                        col_type = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
-                    else:
-                        col_type = "TEXT"
-                
-                    cursor.execute(f"ALTER TABLE products ADD COLUMN {col} {col_type}")
-                    print(f"Added missing column: {col}")
-                except Exception as e:
-                    print(f"Could not add column {col}: {e}")
-    
-        conn.commit()
-
     # Helper function to extract product from a dataframe row
     def extract_product_from_row(row, source_df, source_name, source_mapping):
         nonlocal missing_desc, missing_product_type, missing_size, missing_color
@@ -1249,9 +1214,6 @@ def process_raw_files(sales_file, sales_sheet, sales_mapping,
             'season': season
         }
     
-    # Check schema for products table and add missing columns if necessary
-    ensure_correct_schema(conn)
-
     # Process SOH data for products
     if 'products.sku' in soh_mapping:
         sku_source = soh_mapping['products.sku']
@@ -1385,59 +1347,6 @@ def process_raw_files(sales_file, sales_sheet, sales_mapping,
     # STEP 4: Create SALES table with better error handling
     # ============================================================================
 
-    def ensure_sales_table_schema(conn):
-        """Ensure sales table has the correct schema"""
-        cursor = conn.cursor()
-    
-        # Check current schema
-        cursor.execute("PRAGMA table_info(sales)")
-        existing_columns = {col[1]: {'type': col[2], 'notnull': col[3]} for col in cursor.fetchall()}
-    
-        st.write("Current sales table schema:", existing_columns)
-    
-        # Expected schema for sales table
-        expected_schema = {
-            'sale_id': {'type': 'TEXT', 'notnull': 0},
-            'store_id': {'type': 'TEXT', 'notnull': 0},
-            'sku': {'type': 'TEXT', 'notnull': 0},
-            'sale_date': {'type': 'DATETIME', 'notnull': 0},
-            'quantity': {'type': 'INTEGER', 'notnull': 0},
-            'revenue': {'type': 'REAL', 'notnull': 0}
-        }
-    
-        # Check for missing columns
-        missing_columns = []
-        for col_name, col_def in expected_schema.items():
-            if col_name not in existing_columns:
-                missing_columns.append((col_name, col_def))
-    
-        if missing_columns:
-            st.warning(f"Sales table missing columns: {[col[0] for col in missing_columns]}")
-        
-            # Add missing columns
-            for col_name, col_def in missing_columns:
-                try:
-                    col_type = col_def['type']
-                    notnull = "NOT NULL" if col_def['notnull'] else ""
-                    cursor.execute(f"ALTER TABLE sales ADD COLUMN {col_name} {col_type} {notnull}")
-                    st.success(f"Added missing column: {col_name}")
-                except Exception as e:
-                    st.error(f"Could not add column {col_name}: {e}")
-    
-        # Check for column type mismatches
-        for col_name, col_def in expected_schema.items():
-            if col_name in existing_columns:
-                if existing_columns[col_name]['type'].upper() != col_def['type']:
-                    st.warning(f"Column {col_name} has type {existing_columns[col_name]['type']}, expected {col_def['type']}")
-                    # Can't easily change column type in SQLite, would need to recreate table
-    
-        conn.commit()
-    
-        # Return final schema
-        cursor.execute("PRAGMA table_info(sales)")
-        final_columns = {col[1]: {'type': col[2], 'notnull': col[3]} for col in cursor.fetchall()}
-        return final_columns
-
     sales_records = []
     invalid_sales = 0
     sales_errors = {
@@ -1448,9 +1357,6 @@ def process_raw_files(sales_file, sales_sheet, sales_mapping,
         'invalid_quantity': 0,
         'store_not_found': 0
     }
-
-    # Check schema for sales table and fix if necessary
-    ensure_sales_table_schema(conn)
 
     st.info(f"Processing sales data...")  # Debug info
 
