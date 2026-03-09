@@ -1,10 +1,7 @@
 # data_generator.py
 import pandas as pd
-import numpy as np
 from datetime import datetime, timedelta
 import random
-import sqlite3
-from typing import List, Dict, Tuple
 
 def generate_large_product_catalog(num_styles=200):
     """Generate a large catalog of footwear products"""
@@ -119,7 +116,7 @@ def generate_high_volume_stock(conn, min_stock_records=10000):
     # Get all products
     products_df = pd.read_sql("SELECT sku FROM products", conn)
     if products_df.empty:
-        st.warning("No products found. Generating product catalog first...")
+        print("No products found. Generating product catalog first...")
         products_df = generate_large_product_catalog(150)
         products_df.to_sql('products', conn, if_exists='append', index=False)
         products_df = pd.read_sql("SELECT sku FROM products", conn)
@@ -154,7 +151,7 @@ def generate_high_volume_stock(conn, min_stock_records=10000):
         store_skus = random.sample(skus, k=num_skus_for_store)
         
         for sku in store_skus:
-            base_qty = pattern['base']
+            #base_qty = pattern['base']
             min_qty, max_qty = pattern['range']
             
             # Add some randomness and ensure minimum

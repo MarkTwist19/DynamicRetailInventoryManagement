@@ -1,7 +1,7 @@
 [project]
 name = "retail-stock-balancer"
-version = "1.0.0"
-requires-python = ">=3.13"
+version = "1.0.4"
+requires-python = ">=3.11"
 
 dependencies = [
     "streamlit>=1.32.0",
@@ -14,3 +14,31 @@ dependencies = [
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+allow_untyped_globals = false
+allow_untyped_defs = false
+check_untyped_defs = true
+disallow_any_unimported = false
+disallow_any_expr = false
+disallow_any_decorated = false
+disallow_any_explicit = false
+disallow_subclassing_any = false
+disallow_untyped_calls = false
+disallow_untyped_decorators = false
+
+[[tool.mypy.overrides]]
+module = [
+    "plotly.*",
+    "plotly.express",
+    "fpdf",
+    "streamlit",
+    "pandas",
+    "numpy",
+    "sqlite3",
+]
+ignore_missing_imports = true
