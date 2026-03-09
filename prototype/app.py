@@ -733,7 +733,7 @@ def preview_mapped_data(preview_df: pd.DataFrame, mapping_dict: dict, file_type:
                 
                 st.dataframe(
                     styled_preview,
-                    use_container_width=True,
+                    width='stretch',
                     hide_index=True
                 )
                 
@@ -2311,7 +2311,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
             
             with batch_cols[0]:
                 if available_count > 0:
-                    if st.button(f"✅ Create All ({available_count})", use_container_width=True, type="primary"):
+                    if st.button(f"✅ Create All ({available_count})", width='stretch', type="primary"):
                         created_count = 0
                         for idx, row in filtered.iterrows():
                             transfer_key = f"{row['source_store_id']}_{row['needs_store_id']}_{row['sku']}"
@@ -2342,7 +2342,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
             
             with batch_cols[1]:
                 if pending_count > 0:
-                    if st.button(f"↩️ Undo All ({pending_count})", use_container_width=True, type="secondary"):
+                    if st.button(f"↩️ Undo All ({pending_count})", width='stretch', type="secondary"):
                         deleted_count = 0
                         for idx, row in filtered.iterrows():
                             transfer_key = f"{row['source_store_id']}_{row['needs_store_id']}_{row['sku']}"
@@ -2469,7 +2469,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
                             st.info(f"Selected: {selected_row['From']} → {selected_row['To']} | {selected_row['SKU']}")
                         with col2:
                             # Open popup button
-                            if st.button("📋 Review Transfer", key=f"review_{selected_idx}", use_container_width=True):
+                            if st.button("📋 Review Transfer", key=f"review_{selected_idx}", width='stretch'):
                                 st.session_state.show_create_popup = True
                                 st.session_state.selected_transfer = selected_row.to_dict()
                                 st.rerun()
@@ -2478,7 +2478,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
                         # CREATE TRANSFER POPUP
                         # =========================================================
                         if st.session_state.get('show_create_popup', False):
-                            with st.popover("✏️ Create Transfer", use_container_width=True):
+                            with st.popover("✏️ Create Transfer", width='stretch'):
                                 transfer = st.session_state.selected_transfer
                 
                                 st.markdown(f"### Transfer Details")
@@ -2518,7 +2518,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
 
                                 col1, col2 = st.columns(2)
                                 with col1:
-                                    if st.button("✅ Confirm Transfer", use_container_width=True, type="primary"):
+                                    if st.button("✅ Confirm Transfer", width='stretch', type="primary"):
                                         # Get the actual row data from table_df using the stored indices
                                         source_id = transfer['source_id']
                                         dest_id = transfer['dest_id']
@@ -2553,7 +2553,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
                                             st.rerun()
                 
                                 with col2:
-                                    if st.button("❌ Cancel", use_container_width=True):
+                                    if st.button("❌ Cancel", width='stretch'):
                                         st.session_state.show_create_popup = False
                                         st.session_state.selected_transfer = None
                                         st.rerun()
@@ -2590,7 +2590,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
                         with col1:
                             st.info(f"Selected: {selected_row['From']} → {selected_row['To']} | {selected_row['SKU']}")
                         with col2:
-                            if st.button("↩️ Undo Selected", key="undo_selected", use_container_width=True):
+                            if st.button("↩️ Undo Selected", key="undo_selected", width='stretch'):
                                 cursor.execute(
                                     "DELETE FROM transfer_recommendations WHERE from_store_id = ? AND to_store_id = ? AND sku = ? AND status = 'pending'",
                                     (selected_row['source_id'], selected_row['dest_id'], selected_row['sku_code'])
@@ -2639,7 +2639,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
                             st.info(f"Selected: {selected_row['From']} → {selected_row['To']} | {selected_row['SKU']}")
                         with col2:
                             # Open popup button
-                            if st.button("📋 Review Transfer", key=f"review_{selected_idx}", use_container_width=True):
+                            if st.button("📋 Review Transfer", key=f"review_{selected_idx}", width='stretch'):
                                 st.session_state.show_create_popup = True
                                 st.session_state.selected_transfer = selected_row.to_dict()
                                 st.rerun()
@@ -2648,7 +2648,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
                         # CREATE TRANSFER POPUP
                         # =========================================================
                         if st.session_state.get('show_create_popup', False):
-                            with st.popover("✏️ Create Transfer", use_container_width=True):
+                            with st.popover("✏️ Create Transfer", width='stretch'):
                                 transfer = st.session_state.selected_transfer
                 
                                 st.markdown(f"### Transfer Details")
@@ -2688,7 +2688,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
                 
                                 col1, col2 = st.columns(2)
                                 with col1:
-                                    if st.button("✅ Confirm Transfer", use_container_width=True, type="primary"):
+                                    if st.button("✅ Confirm Transfer", width='stretch', type="primary"):
                                         # Get the actual row data from table_df using the stored indices
                                         source_id = transfer['source_id']
                                         dest_id = transfer['dest_id']
@@ -2723,7 +2723,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
                                             st.rerun()
                 
                                 with col2:
-                                    if st.button("❌ Cancel", use_container_width=True):
+                                    if st.button("❌ Cancel", width='stretch'):
                                         st.session_state.show_create_popup = False
                                         st.session_state.selected_transfer = None
                                         st.rerun()
@@ -2757,7 +2757,7 @@ elif st.session_state.active_tab == "🔄 Transfers":
                         with col1:
                             st.info(f"Selected: {selected_row['From']} → {selected_row['To']} | {selected_row['SKU']}")
                         with col2:
-                            if st.button("↩️ Undo Selected", key="undo_selected", use_container_width=True):
+                            if st.button("↩️ Undo Selected", key="undo_selected", width='stretch'):
                                 cursor.execute(
                                     "DELETE FROM transfer_recommendations WHERE from_store_id = ? AND to_store_id = ? AND sku = ? AND status = 'pending'",
                                     (selected_row['source_id'], selected_row['dest_id'], selected_row['sku_code'])
@@ -3434,7 +3434,7 @@ elif st.session_state.active_tab == "📁 Data Management":
                 
                     # Show data preview
                     with st.expander("🔍 Preview Excel Data"):
-                        st.dataframe(preview_df, use_container_width=True)
+                        st.dataframe(preview_df, width='stretch')
                     
                 except Exception as e:
                     st.error(f"Error reading Excel file: {e}")
@@ -3475,7 +3475,7 @@ elif st.session_state.active_tab == "📁 Data Management":
                         )
                 
                     with st.expander("🔍 Preview Excel Data"):
-                        st.dataframe(preview_df, use_container_width=True)
+                        st.dataframe(preview_df, width='stretch')
                     
                 except Exception as e:
                     st.error(f"Error reading Excel file: {e}")
@@ -3490,7 +3490,7 @@ elif st.session_state.active_tab == "📁 Data Management":
             soh_complete, soh_missing = check_mapping_complete(st.session_state.soh_column_mapping, "soh")
         
             if sales_complete and soh_complete:
-                if st.button("🚀 Process Files", type="primary", use_container_width=True):
+                if st.button("🚀 Process Files", type="primary", width='stretch'):
                     with st.spinner("Processing files and loading into database..."):
                         try:
                             # Process both files
