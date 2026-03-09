@@ -1786,7 +1786,7 @@ if st.session_state.active_tab == "📊 Dashboard":
     store_count = cursor.fetchone()[0] or 0
     
     if stock_count == 0 or store_count == 0:
-        st.warning("⚠️ No data loaded. Please upload your CSV files in the **Data Management** tab first.")
+        st.warning("⚠️ No data loaded. Please upload your CSV or Excel files in the **Data Management** tab first.")
         
         col1, col2 = st.columns(2)
         with col1:
